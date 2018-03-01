@@ -3,7 +3,7 @@
 
 function csh_maker
 
-inp.Ca_Si_target = 1.5;
+inp.Ca_Si_target = 1;
 inp.nx = 1;inp.ny = 1;
 inp.finite = 0;  %1 means finite sized
 
