@@ -1,0 +1,44 @@
+#LAMMPS INPUT FILE
+timer off
+echo both
+
+units 		real
+boundary 	p p p
+atom_style      full
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  harmonic
+
+pair_style lj/cut/coul/long 11
+# pair_modify mix arithmetic
+
+read_data data.dat
+
+kspace_style ewald 1e-6
+
+neighbor        2.0 bin
+neigh_modify    every 1 check yes
+special_bonds coul 0 0 0 lj 0 0 0
+reset_timestep 0
+
+
+thermo 100
+thermo_style custom step temp pe pxx pyy pzz density
+
+dump 10 all xyz 100 movie.xyz
+dump_modify 10 element Oc Ca Oh Od Ob Cw Si Sib Ow Hw H Hc C
+
+minimize 1.0e-8 1.0e-8 10000 10000
+
+fix fx all box/relax tri 0
+minimize 1.0e-8 1.0e-8 10000 10000
+unfix fx
+
+group wat type 9 10
+group rest subtract all wat
+
+velocity all create 300.0 5812775 dist gaussian mom yes rot yes
+
+
+fix NPT all npt temp 300 300 100  tri 0 0 1000
+run 100000
